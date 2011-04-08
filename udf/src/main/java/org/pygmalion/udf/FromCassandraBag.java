@@ -37,7 +37,7 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
  */
 public class FromCassandraBag extends EvalFunc<Tuple> {
 
-    private static String DELIM = ",\\s";
+    private static String DELIM = "[\\s,]+";
     private static String GREEDY_OPERATOR = "*";
 
     public Tuple exec(Tuple input) throws IOException {
