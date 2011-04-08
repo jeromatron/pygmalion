@@ -37,8 +37,8 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
  */
 public class FromCassandraBag extends EvalFunc<Tuple> {
 
-    static BagFactory bagFactory     = BagFactory.getInstance();
-    static TupleFactory tupleFactory = TupleFactory.getInstance();
+    private static String DELIM = ",\\s";
+    private static String GREEDY_OPERATOR = "*";
 
     public Tuple exec(Tuple input) throws IOException {
         // Size must be two (column_selector,cassandra_bag)
@@ -47,14 +47,14 @@ public class FromCassandraBag extends EvalFunc<Tuple> {
 
         String columnSelector = input.get(0).toString();
         DataBag cassandraBag  = (DataBag)input.get(1);
-        String[] selections   = columnSelector.split(",");
-        Tuple output          = tupleFactory.getInstance().newTuple(selections.length);
+        String[] selections   = columnSelector.split(DELIM);
+        Tuple output          = TupleFactory.getInstance().newTuple(selections.length);
 
         for (int i = 0; i < selections.length; i++) {
             String selection = selections[i];
-            if (selection.endsWith("*")) {
+            if (selection.endsWith(GREEDY_OPERATOR)) {
                 String namePrefix  = selection.substring(0,selection.length()-1);
-                DataBag columnsBag = bagFactory.newDefaultBag();
+                DataBag columnsBag = BagFactory.getInstance().newDefaultBag();
 
                 // Find all columns in the input bag that begin with 'namePrefix'
                 // and add them to the 'columnsBag'
