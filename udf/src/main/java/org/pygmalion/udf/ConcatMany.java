@@ -13,7 +13,7 @@ public class ConcatMany extends EvalFunc<String> {
         }
         StringBuilder builder = new StringBuilder();
         for (Object o : input.getAll()) {
-            builder.append((String) o);
+            builder.append(o);
         }
 
         return builder.toString();
