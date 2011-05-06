@@ -1,16 +1,23 @@
 create keyspace pygmalion;
 use pygmalion;
-create column family account with comparator = UTF8Type and default_validation_class = UTF8Type;
+create column family account with comparator = UTF8Type and default_validation_class = UTF8Type and
+    column_metadata=
+    [
+        {column_name: num_heads, validation_class: LongType},
+    ];
 create column family betelgeuse with comparator = UTF8Type and default_validation_class = UTF8Type;
 
 set account['hipcat']['first_name'] = 'Zaphod';
 set account['hipcat']['last_name'] = 'Beeblebrox';
 set account['hipcat']['birth_place'] = 'Betelgeuse Five';
+set account['hipcat']['num_heads'] = '2';
 
 set account['hoopyfrood']['first_name'] = 'Ford';
 set account['hoopyfrood']['last_name'] = 'Prefect';
 set account['hoopyfrood']['birth_place'] = 'Betelgeuse Five';
+set account['hoopyfrood']['num_heads'] = '1';
 
 set account['earthman']['first_name'] = 'Arthur';
 set account['earthman']['last_name'] = 'Dent';
 set account['earthman']['birth_place'] = 'Earth';
+set account['earthman']['num_heads'] = '1';
