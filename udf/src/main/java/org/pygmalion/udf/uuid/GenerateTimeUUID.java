@@ -23,7 +23,8 @@ public class GenerateTimeUUID extends EvalFunc<String> {
         } else if (input.size() == 1) {
             Long time = (Long) input.get(0);
             rval = TimeUUIDUtils.getTimeUUID(time).toString();
-        }
+        } else
+            throw new IOException("You must either have no argument or one argument (time:long) to use GenerateTimeUUID");
 
         return rval;
     }
