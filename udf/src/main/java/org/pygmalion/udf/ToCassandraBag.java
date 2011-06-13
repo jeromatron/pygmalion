@@ -27,7 +27,7 @@ import java.util.Properties;
 public class ToCassandraBag extends EvalFunc<Tuple> {
 
     private static String UDFCONTEXT_SCHEMA_KEY = "cassandra.input_field_schema";
-    private static String DELIM = ",";
+    private static String DELIM = "[\\s,]+";
 
     public Tuple exec(Tuple input) throws IOException {
         Tuple row = TupleFactory.getInstance().newTuple(2);

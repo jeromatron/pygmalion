@@ -14,16 +14,25 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * EvalFunc to take the given set of column names and convert them
+ * into a CassandraBag to delete those columns.  Works similarly
+ * to ToCassandraBag.
+ *
+ * The first value in the input bag *has* to be the key. For
+ * the rest of the fields, this UDF will interrogate the values
+ * that you have named the variables to be the column names.
+ */
 public class DeleteColumns extends EvalFunc<Tuple>  {
 
     private static String UDFCONTEXT_SCHEMA_KEY = "cassandra.input_field_schema";
-    private static String DELIM = ",";
+    private static String DELIM = "[\\s,]+";
 
     public Tuple exec(Tuple input) throws IOException {
         Tuple row = TupleFactory.getInstance().newTuple(2);
         DataBag columns = BagFactory.getInstance().newDefaultBag();
         UDFContext context = UDFContext.getUDFContext();
-        Properties property = context.getUDFProperties(ToCassandraBag.class);
+        Properties property = context.getUDFProperties(DeleteColumns.class);
         String fieldString = property.getProperty(UDFCONTEXT_SCHEMA_KEY);
         String [] fieldnames = fieldString.split(DELIM);
 
@@ -63,7 +72,7 @@ public class DeleteColumns extends EvalFunc<Tuple>  {
         }
 
         UDFContext context = UDFContext.getUDFContext();
-        Properties property = context.getUDFProperties(ToCassandraBag.class);
+        Properties property = context.getUDFProperties(DeleteColumns.class);
         property.setProperty(UDFCONTEXT_SCHEMA_KEY, builder.toString());
 
         return super.outputSchema(input);
