@@ -9,11 +9,11 @@ rows = FOREACH raw GENERATE key, FLATTEN(org.pygmalion.udf.FromCassandraBag('fir
 
 betelgeuse_born = FILTER rows BY (birth_place matches '.*[Bb]etelgeuse.*');
 
-betelguese_cassandra = FOREACH betelgeuse_born GENERATE
+betelgeuse_cassandra = FOREACH betelgeuse_born GENERATE
     FLATTEN(org.pygmalion.udf.ToCassandraBag(first_name, last_name, birth_place)) AS (
         first_name:chararray,
         last_name:chararray,
         birth_place:chararray
     );
 
-STORE betelguese_cassandra INTO 'cassandra://pygmalion/betelgeuse' USING CassandraStorage();
+STORE betelgeuse_cassandra INTO 'cassandra://pygmalion/betelgeuse' USING CassandraStorage();

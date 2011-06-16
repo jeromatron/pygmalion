@@ -27,7 +27,8 @@ import java.util.Properties;
 public class ToCassandraBag extends EvalFunc<Tuple> {
 
     private static String UDFCONTEXT_SCHEMA_KEY = "cassandra.input_field_schema";
-    private static String DELIM = "[\\s,]+";
+    private static String INPUT_DELIM = "[\\s,]+";
+    private static char OUTPUT_DELIM = ',';
 
     public Tuple exec(Tuple input) throws IOException {
         Tuple row = TupleFactory.getInstance().newTuple(2);
@@ -35,7 +36,7 @@ public class ToCassandraBag extends EvalFunc<Tuple> {
         UDFContext context = UDFContext.getUDFContext();
         Properties property = context.getUDFProperties(ToCassandraBag.class);
         String fieldString = property.getProperty(UDFCONTEXT_SCHEMA_KEY);
-        String [] fieldnames = fieldString.split(DELIM);
+        String [] fieldnames = fieldString.split(INPUT_DELIM);
 
         // IT IS ALWAYS ASSUMED THAT THE OBJECT AT INDEX 0 IS THE ROW KEY
 
@@ -65,7 +66,7 @@ public class ToCassandraBag extends EvalFunc<Tuple> {
         for (int i=0; i<fields.size(); i++) {
             builder.append(fields.get(i).alias);
             if (i != fields.size()-1) {
-                builder.append(DELIM);
+                builder.append(OUTPUT_DELIM);
             }
         }
 
