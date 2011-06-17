@@ -39,6 +39,8 @@ public class ToCassandraBag extends EvalFunc<Tuple> {
         String [] fieldnames = fieldString.split(INPUT_DELIM);
 
         // IT IS ALWAYS ASSUMED THAT THE OBJECT AT INDEX 0 IS THE ROW KEY
+        if(input.get(0)==null)
+            throw new IOException("The object at index 0 is the row key, its value can't be null!");
 
         for (int i=1; i<input.size(); i++) {
             if (input.get(i) instanceof DataBag) {
