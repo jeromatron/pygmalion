@@ -36,6 +36,7 @@ public class ToCassandraBag extends EvalFunc<Tuple> {
     public Tuple exec(Tuple input) throws IOException {
         Tuple row = TupleFactory.getInstance().newTuple(2);
         DataBag columns = BagFactory.getInstance().newDefaultBag();
+        //TODO: this isn't thread safe
         UDFContext context = UDFContext.getUDFContext();
         Properties property = context.getUDFProperties(ToCassandraBag.class);
         String fieldString = property.getProperty(UDFCONTEXT_SCHEMA_KEY);
@@ -79,7 +80,7 @@ public class ToCassandraBag extends EvalFunc<Tuple> {
                 builder.append(OUTPUT_DELIM);
             }
         }
-
+        //TODO: this isn't thread safe
         UDFContext context = UDFContext.getUDFContext();
         Properties property = context.getUDFProperties(ToCassandraBag.class);
         property.setProperty(UDFCONTEXT_SCHEMA_KEY, builder.toString());
