@@ -37,7 +37,7 @@ public class ToCassandraBagTest {
                 builder.append(',');
             }
         }
-        properties.setProperty(ToCassandraBag.UDFCONTEXT_SCHEMA_KEY, builder.toString());
+        properties.setProperty(ToCassandraBag.UDFCONTEXT_SCHEMA_KEY + ".default_context", builder.toString());
         Tuple tuple = tcb.exec(input);
         assertNotNull("Tuple is null", tuple);
         assertEquals(2, tuple.size());
@@ -65,7 +65,7 @@ public class ToCassandraBagTest {
                 builder.append(',');
             }
         }
-        properties.setProperty(ToCassandraBag.UDFCONTEXT_SCHEMA_KEY, builder.toString());
+        properties.setProperty(ToCassandraBag.UDFCONTEXT_SCHEMA_KEY + ".default_context", builder.toString());
         input.append("foo extra");
         try {
             tcb.exec(input);

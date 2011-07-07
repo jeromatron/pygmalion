@@ -32,14 +32,27 @@ public class ToCassandraBag extends EvalFunc<Tuple> {
     public static final String UDFCONTEXT_SCHEMA_KEY = "cassandra.input_field_schema";
     private static final Pattern INPUT_DELIM = Pattern.compile("[\\s,]+");
     private static final char OUTPUT_DELIM = ',';
+    private static final String defaultContext = "default_context";
+    private String context;
+
+    public ToCassandraBag() {
+        this(defaultContext);
+    }
+
+    /**
+     * Pass in a unique value for the script for the context, e.g. a relation name.
+     * @param context
+     */
+    public ToCassandraBag(String context) {
+        this.context = context;
+    }
 
     public Tuple exec(Tuple input) throws IOException {
         Tuple row = TupleFactory.getInstance().newTuple(2);
         DataBag columns = BagFactory.getInstance().newDefaultBag();
-        //TODO: this isn't thread safe
         UDFContext context = UDFContext.getUDFContext();
         Properties property = context.getUDFProperties(ToCassandraBag.class);
-        String fieldString = property.getProperty(UDFCONTEXT_SCHEMA_KEY);
+        String fieldString = property.getProperty(getSchemaKey());
         String [] fieldnames = INPUT_DELIM.split(fieldString);
         if (log.isDebugEnabled()) {
             log.debug("Tuple: " + input.toDelimitedString(",") + " Fields: " + fieldString);
@@ -80,11 +93,15 @@ public class ToCassandraBag extends EvalFunc<Tuple> {
                 builder.append(OUTPUT_DELIM);
             }
         }
-        //TODO: this isn't thread safe
+        
         UDFContext context = UDFContext.getUDFContext();
         Properties property = context.getUDFProperties(ToCassandraBag.class);
-        property.setProperty(UDFCONTEXT_SCHEMA_KEY, builder.toString());
+        property.setProperty(getSchemaKey(), builder.toString());
 
         return super.outputSchema(input);
+    }
+
+    private String getSchemaKey() {
+        return UDFCONTEXT_SCHEMA_KEY + '.' + context;
     }
 }
