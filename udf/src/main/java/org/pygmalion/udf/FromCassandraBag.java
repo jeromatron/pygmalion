@@ -1,6 +1,8 @@
 package org.pygmalion.udf;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
+
 import org.apache.pig.EvalFunc;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
@@ -36,8 +38,8 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
  * specify a slice predicate, this will be inefficient.
  */
 public class FromCassandraBag extends EvalFunc<Tuple> {
+    private static Pattern DELIM_PATTERN = Pattern.compile("[\\s,]+");
 
-    private static String DELIM = "[\\s,]+";
     private static String GREEDY_OPERATOR = "*";
 
     public Tuple exec(Tuple input) throws IOException {
@@ -47,7 +49,7 @@ public class FromCassandraBag extends EvalFunc<Tuple> {
 
         String columnSelector = input.get(0).toString();
         DataBag cassandraBag  = (DataBag)input.get(1);
-        String[] selections   = columnSelector.split(DELIM);
+        String[] selections   = DELIM_PATTERN.split(columnSelector);
         Tuple output          = TupleFactory.getInstance().newTuple(selections.length);
 
         for (int i = 0; i < selections.length; i++) {

@@ -8,10 +8,13 @@ import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.util.UDFContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 /**
  * EvalFunc to take the given set of values and convert them
@@ -25,23 +28,29 @@ import java.util.Properties;
  * be persisted individually.
  */
 public class ToCassandraBag extends EvalFunc<Tuple> {
-
-    private static String UDFCONTEXT_SCHEMA_KEY = "cassandra.input_field_schema";
-    private static String INPUT_DELIM = "[\\s,]+";
-    private static char OUTPUT_DELIM = ',';
+    private transient static Logger log = LoggerFactory.getLogger(ToCassandraBag.class);
+    public static final String UDFCONTEXT_SCHEMA_KEY = "cassandra.input_field_schema";
+    private static final Pattern INPUT_DELIM = Pattern.compile("[\\s,]+");
+    private static final char OUTPUT_DELIM = ',';
 
     public Tuple exec(Tuple input) throws IOException {
         Tuple row = TupleFactory.getInstance().newTuple(2);
         DataBag columns = BagFactory.getInstance().newDefaultBag();
+        //TODO: this isn't thread safe
         UDFContext context = UDFContext.getUDFContext();
         Properties property = context.getUDFProperties(ToCassandraBag.class);
         String fieldString = property.getProperty(UDFCONTEXT_SCHEMA_KEY);
-        String [] fieldnames = fieldString.split(INPUT_DELIM);
+        String [] fieldnames = INPUT_DELIM.split(fieldString);
+        if (log.isDebugEnabled()) {
+            log.debug("Tuple: " + input.toDelimitedString(",") + " Fields: " + fieldString);
+        }
 
         // IT IS ALWAYS ASSUMED THAT THE OBJECT AT INDEX 0 IS THE ROW KEY
         if(input.get(0)==null)
             throw new IOException("The object at index 0 is the row key, its value can't be null!");
-
+        if (input.size() != fieldnames.length){
+            throw new IOException("There is a mismatch between the number of inputs (" + input.size() + " and fieldnames (" + fieldnames.length + ")");
+        }
         for (int i=1; i<input.size(); i++) {
             if (input.get(i) instanceof DataBag) {
                 columns.addAll((DataBag) input.get(i));
@@ -71,7 +80,7 @@ public class ToCassandraBag extends EvalFunc<Tuple> {
                 builder.append(OUTPUT_DELIM);
             }
         }
-
+        //TODO: this isn't thread safe
         UDFContext context = UDFContext.getUDFContext();
         Properties property = context.getUDFProperties(ToCassandraBag.class);
         property.setProperty(UDFCONTEXT_SCHEMA_KEY, builder.toString());
