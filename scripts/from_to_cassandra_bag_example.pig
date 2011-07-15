@@ -1,7 +1,10 @@
 register 'pygmalion.jar';
 
+define FromCassandraBag org.pygmalion.udf.FromCassandraBag();
+define ToCassandraBag org.pygmalion.udf.ToCassandraBag();
+
 raw =  LOAD 'cassandra://pygmalion/account' USING CassandraStorage() AS (key:chararray, columns:bag {column:tuple (name, value)});
-rows = FOREACH raw GENERATE key, FLATTEN(org.pygmalion.udf.FromCassandraBag('first_name, last_name, birth_place', columns)) AS (
+rows = FOREACH raw GENERATE key, FLATTEN(FromCassandraBag('first_name, last_name, birth_place', columns)) AS (
     first_name:chararray,
     last_name:chararray,
     birth_place:chararray
@@ -10,10 +13,6 @@ rows = FOREACH raw GENERATE key, FLATTEN(org.pygmalion.udf.FromCassandraBag('fir
 betelgeuse_born = FILTER rows BY (birth_place matches '.*[Bb]etelgeuse.*');
 
 betelgeuse_cassandra = FOREACH betelgeuse_born GENERATE
-    FLATTEN(org.pygmalion.udf.ToCassandraBag(first_name, last_name, birth_place)) AS (
-        first_name:chararray,
-        last_name:chararray,
-        birth_place:chararray
-    );
+    FLATTEN(ToCassandraBag(first_name, last_name, birth_place));
 
 STORE betelgeuse_cassandra INTO 'cassandra://pygmalion/betelgeuse' USING CassandraStorage();
