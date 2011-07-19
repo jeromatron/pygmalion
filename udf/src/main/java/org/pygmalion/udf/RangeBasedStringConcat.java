@@ -74,18 +74,23 @@ public class RangeBasedStringConcat extends EvalFunc<String> {
     }
 
     private void appendObject(Object o, Appendable builder) throws IOException {
-        if (o instanceof Tuple){
-            Tuple tmp = (Tuple) o;
-            if (tmp.size() > 0){
-                processTuple(tmp, builder);
+        if (o != null) {
+            if (o instanceof Tuple){
+                Tuple tmp = (Tuple) o;
+                if (tmp.size() > 0){
+                    processTuple(tmp, builder);
+                }
+            } else if (o instanceof DataBag){
+                DataBag db = (DataBag) o;
+                for (Tuple tuple : db) {
+                    processTuple(tuple, builder);
+                }
+            } else {
+                String s = o.toString();
+                if (s != null && s.length() > 0) {
+                    builder.append(s).append(separator);
+                }
             }
-        } else if (o instanceof DataBag){
-            DataBag db = (DataBag) o;
-            for (Tuple tuple : db) {
-                processTuple(tuple, builder);
-            }
-        } else {
-            builder.append(o.toString()).append(separator);
         }
     }
 }
