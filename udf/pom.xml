@@ -8,7 +8,7 @@
     <name>Pygmalion</name>
     <url>https://github.com/jeromatron/pygmalion/</url>
     <scm>
-        <developerConnection>scm:git:git://github.com/jeromatron/pygmalion.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:jeromatron/pygmalion.git</developerConnection>
     </scm>
 
 
