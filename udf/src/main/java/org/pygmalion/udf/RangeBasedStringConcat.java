@@ -5,7 +5,7 @@ import org.apache.pig.data.Tuple;
 
 import java.io.IOException;
 
-public class StringConcat extends EvalFunc<String> {
+public class RangeBasedStringConcat extends EvalFunc<String> {
     @Override
     public String exec(Tuple input) throws IOException {
         if (input == null || input.size() == 0) {
