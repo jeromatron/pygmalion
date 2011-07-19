@@ -5,6 +5,13 @@
     <artifactId>pygmalion</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0-SNAPSHOT</version>
+    <name>Pygmalion</name>
+    <url>https://github.com/jeromatron/pygmalion/</url>
+    <scm>
+        <developerConnection>scm:git:git://github.com/jeromatron/pygmalion.git</developerConnection>
+    </scm>
+
+
     <build>
         <plugins>
             <plugin>
@@ -26,11 +33,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>3.0</version>
-			<scope>test</scope>
-		</dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-core</artifactId>
