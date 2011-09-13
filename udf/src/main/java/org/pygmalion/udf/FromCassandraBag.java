@@ -46,6 +46,8 @@ public class FromCassandraBag extends EvalFunc<Tuple> {
         // Size must be two (column_selector,cassandra_bag)
         if (input == null || input.size() < 2)
             throw new IOException("Invalid input. Please pass in both a list of column names and the columns themselves.");
+        if (input.isNull(0) || input.isNull(1))
+            return null;
 
         String columnSelector = input.get(0).toString();
         DataBag cassandraBag  = (DataBag)input.get(1);
