@@ -14,4 +14,4 @@ account = FOREACH raw_signals GENERATE key, FLATTEN(FromCassandraBag('first_name
 
 account_cassandra = FOREACH filtered GENERATE FLATTEN(DeleteColumns(key, num_heads));
 
-STORE accountcassandra INTO 'cassandra://pygmalion/account' USING CassandraStorage();
+STORE account_cassandra INTO 'cassandra://pygmalion/account' USING CassandraStorage();
