@@ -6,7 +6,7 @@ define FromCassandraBag org.pygmalion.udf.FromCassandraBag();
 define ToCassandraBag org.pygmalion.udf.ToCassandraBag();
 define GenerateTimeUUID org.pygmalion.udf.uuid.GenerateTimeUUID();
 
-raw_account = LOAD 'cassandra://pygmalion/account' USING CassandraStorage();
+raw_account = LOAD 'cassandra://pygmalion/account' USING CassandraStorage() AS (key:chararray, columns:bag {column:tuple (name, value)});
 
 account = FOREACH raw_account GENERATE
                     key AS key,
