@@ -24,3 +24,13 @@ set account['earthman']['first_name'] = 'Arthur';
 set account['earthman']['last_name'] = 'Dent';
 set account['earthman']['birth_place'] = 'Earth';
 set account['earthman']['num_heads'] = '1';
+
+create column family updates with
+	comparator = UTF8Type and
+	default_validation_class = UTF8Type and
+	key_validation_class = UTF8Type;
+
+set updates['earthman']['2012-Sep-13-10:30:03'] = 'Out for a walk';
+set updates['earthman']['2012-Sep-14-20:45:28'] = 'Can\'t sleep. I wonder if Ford\'s parents knew about the car when they named him.';
+set updates['hipcat']['2012-Sep-14-07:18:55'] = 'Can\'t believe how amazing I am';
+set updates['hoopyfrood']['2012-Sep-15-09:00:25'] = 'Where did I put my towel?!';

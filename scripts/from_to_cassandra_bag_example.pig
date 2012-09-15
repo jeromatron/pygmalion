@@ -3,7 +3,7 @@ register 'pygmalion.jar';
 define FromCassandraBag org.pygmalion.udf.FromCassandraBag();
 define ToCassandraBag org.pygmalion.udf.ToCassandraBag();
 
-raw =  LOAD 'cassandra://pygmalion/account' USING CassandraStorage() AS (key:chararray, columns:bag {column:tuple (name, value)});
+raw =  LOAD 'cassandra://pygmalion/account' USING CassandraStorage();
 rows = FOREACH raw GENERATE key, FLATTEN(FromCassandraBag('first_name, last_name, birth_place', columns)) AS (
     first_name:chararray,
     last_name:chararray,
