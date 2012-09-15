@@ -3,6 +3,7 @@ use pygmalion;
 create column family account with
     comparator = UTF8Type and
     default_validation_class = UTF8Type and
+    key_validation_class = UTF8Type and
     column_metadata=
     [
         {column_name: num_heads, validation_class: LongType},
