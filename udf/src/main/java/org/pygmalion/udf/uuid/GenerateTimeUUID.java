@@ -18,7 +18,7 @@ public class GenerateTimeUUID extends EvalFunc<String> {
     public String exec(Tuple input) throws IOException {
         String rval = null;
 
-        if (input != null || input.size() == 0) {
+        if (input == null || input.size() == 0) {
             rval = TimeUUIDUtils.getUniqueTimeUUIDinMillis().toString();
         } else if (input.size() == 1) {
             Long time = (Long) input.get(0);
